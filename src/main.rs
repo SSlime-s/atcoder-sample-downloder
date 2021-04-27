@@ -233,6 +233,7 @@ const BIN: &'static str = "./main";
         std::fs::OpenOptions::new()
             .write(true)
             .create(true)
+            .truncate(true)
             .open(cookie_path.clone())?
             .write_all(cookies_str.as_bytes())?;
         println!("SAVED YOUR COOKIE IN {}", cookie_path.to_str().unwrap());
