@@ -193,23 +193,31 @@ impl AtCoder {
 
     //utils
     fn create_sample_test_files(test_cases: &[(String, String)]) -> Result<(), failure::Error> {
-        for (idx, (input, output)) in test_cases.iter().enumerate() {
-            //e.g sample_input_1.txt sample_output_1.txt
-            let input_file_name = format!("sample_input_{}.txt", idx + 1);
+        let cases: &str = &test_cases.iter().enumerate().map(|(idx, (input, output))| {
+            format!(r##"
+#[test]
+fn sample{}() {{
+    let testdir = TestDir::new(BIN, "");
+    let output = testdir
+        .cmd()
+        .output_with_stdin(r#"{}"#)
+        .tee_output()
+        .expect_success();
+    assert_eq!(output.stdout_str(), r#"{}"#);
+    assert!(output.stderr_str().is_empty());
+}}
+"##, idx + 1, if input == "\n" {""} else {input}, output)
+        }).join("\n");
+        let prefix = r#"use cli_test_dir::*;
 
-            let mut input_file = std::fs::OpenOptions::new()
-                .write(true)
-                .create(true)
-                .open(input_file_name)?;
-            input_file.write_all(input.as_bytes())?;
-
-            let output_file_name = format!("sample_output_{}.txt", idx + 1);
-            let mut output_file = std::fs::OpenOptions::new()
-                .write(true)
-                .create(true)
-                .open(output_file_name)?;
-            output_file.write_all(output.as_bytes())?;
-        }
+const BIN: &'static str = "./main";
+"#.to_string();
+        let mut sample_file = std::fs::OpenOptions::new()
+            .write(true)
+            .create(true)
+            .truncate(true)
+            .open("sample_inputs.rs")?;
+        sample_file.write_all((prefix + cases).as_bytes())?;
         Ok(())
     }
     fn save_cookie_in_local(response: &reqwest::Response) -> Result<(), failure::Error> {
