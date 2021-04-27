@@ -1,8 +1,14 @@
+# -*- coding:utf-8-unix -*-
+
 [package]
 name = "atcoder-sample-downloder"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["togatoga <togasakitogatoga@gmail.com>"]
 edition = "2018"
+
+[[bin]]
+name = "main"
+path = "src/main.rs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -11,7 +17,7 @@ scraper = "0.11.0"
 clap = "2.33.0"
 url = "2.1.0"
 failure = "0.1.6"
-tokio = { version = "0.2", features = ["full"] }
+tokio = { version = "1.5.0", features = ["full"] }
 selectors = "0.21.0"
 rpassword = "4.0"
 itertools = "0.8"
